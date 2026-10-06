@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>Manajemen Kendaraan - OOP JavaScript</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f1f5f9;
+        color: #1e293b;
+    }
+
+    header {
+        background: #2563eb;
+        color: white;
+        padding: 25px;
+        text-align: center;
+    }
+
+    .container {
+        width: 90%;
+        max-width: 1000px;
+        margin: 30px auto;
+    }
+
+    .card {
+        background: white;
+        padding: 25px;
+        margin-bottom: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px;
+    }
+
+    h2 {
+        margin: 0;
+        color: #1d4ed8;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    input,
+    select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #f1f5f9;
+        border-radius: 6px;
+    }
+
+    button {
+        border: none;
+        padding: 10px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        color: white;
+        background: blue;
+        margin-right: 5px;
+    }
+
+    button:hover {
+        background: #1d4ed8;
+    }
+
+    .danger {
+        background: #dc2626;
+    }
+
+    .danger:hover {
+        background: #b91c1c;
+    }
+
+    .vehicle {
+        border: 1px solid #e228f0;
+        padding: 15px;
+        border-radius: 3px;
+        margin: 10px;
+    }
+
+    .vehicle h3 {
+        margin-top: 0;
+    }
+
+    .info {
+        color: #475569;
+    }
+
+    .success {
+        color: #15803d;
+        font-weight: bold;
+    }
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+    }
+
+    .stat {
+        background: #eff6ff;
+        padding: 20px;
+        text-align: center;
+        border-radius: 8px;
+    }
+
+    .stat h3 {
+        font-size: 30px;
+        margin: 5px;
+        color: #2563eb;
+    }
+
+    @media (max-width: 600px) {
+        .stats {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+
+</head>
+
+<body>
+
+
+<header>
+    <h1>Sistem Manajemen Kendaraan</h1>
+    <p>Implementasi Pemrograman Berorientasi Objek JavaScript</p>
+</header>
+
+<div class="container">
+
+    <!-- Statistik -->
+    <div class="card">
+        <h2>Statistik</h2>
+
+        <div class="stats">
+
+            <div class="stat">
+                <h3 id="totalKendaraan">0</h3>
+                <p>Total Kendaraan</p>
+            </div>
+
+            <div class="stat">
+                <h3 id="totalMobil">0</h3>
+                <p>Mobil</p>
+            </div>
+
+            <div class="stat">
+                <h3 id="totalMotor">0</h3>
+                <p>Motor</p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="card">
+        <h2>Tambah Kendaraan</h2>
+
+        <div class="form-group">
+            <label for="jenis">Jenis Kendaraan</label>
+
+            <select id="jenis">
+                <option value="mobil">Mobil</option>
+                <option value="motor">Motor</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="merk">Merk Kendaraan</label>
+
+            <input
+                type="text"
+                id="merk"
+                placeholder="Contoh: Toyota">
+        </div>
+
+        <div class="form-group">
+            <label for="tahun">Tahun</label>
+
+            <input
+                type="number"
+                id="tahun"
+                placeholder="Contoh: 2025">
+        </div>
+
+        <div class="form-group">
+            <label for="detail">Jumlah Pintu / Jenis Motor</label>
+
+            <input
+                type="text"
+                id="detail"
+                placeholder="Mobil: 4 | Motor: Matic">
+        </div>
+
+        <button onclick="tambahKendaraan()">
+            + Tambah Kendaraan
+        </button>
+    </div>
+
+    <!-- Daftar -->
+    <div class="card">
+        <h2>Daftar Kendaraan</h2>
+
+        <div id="daftarKendaraan">
+            <p class="info">Belum ada kendaraan.</p>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+    /*
+     * ============================================================
+     * CLASS PARENT
+     * ============================================================
+     */
+
+    class Kendaraan {
+
+        // Encapsulation menggunakan private field
+        #tahun;
+
+        constructor(merk, tahun) {
+            this.merk = merk;
+            this.tahun = tahun;
+        }
+
+        /*
+         * Getter
+         */
+
+        get tahun() {
+            return this.#tahun;
+        }
+
+        /*
+         * Setter
+         */
+
+        set tahun(nilai) {
+
+            if (nilai < 1900) {
+                console.log("Tahun tidak valid.");
+                return;
+            }
+
+            this.#tahun = nilai;
+        }
+
+        /*
+         * Method
+         */
+
+        berjalan() {
+            return this.merk + " sedang berjalan.";
+        }
+
+        /*
+         * Method informasi
+         */
+
+        getInfo() {
+            return `
+                <strong>${this.merk}</strong>
+                (${this.tahun})
+            `;
+        }
+    }
+
+
+    /*
+     * ===================================================
+     * CLASS MOBIL
+     * ===================================================
+     *
+     * Inheritance:
+     * Mobil mewarisi Kendaraan
+     */
+
+    class Mobil extends Kendaraan {
+
+        constructor(merk, tahun, jumlahPintu) {
+
+            // Memanggil constructor parent
+            super(merk, tahun);
+
+            this.jumlahPintu = jumlahPintu;
+        }
+
+        /*
+         * Polymorphism
+         *
+         * Method berjalan() memiliki
+         * perilaku berbeda dari parent.
+         */
+
+        berjalan() {
+            return `${this.merk} berjalan dengan
+                    ${this.jumlahPintu} pintu.`;
+        }
+
+        getInfo() {
+            return `
+                <strong>🚗 ${this.merk}</strong>
+            `;
+        }
+    }
+
+
+    /*
+     * ===================================================
+     * CLASS MOTOR
+     * ===================================================
+     */
+
+    class Motor extends Kendaraan {
+
+        constructor(merk, tahun, jenisMotor) {
+
+            super(merk, tahun);
+
+            this.jenisMotor = jenisMotor;
+        }
+
+        /*
+         * Polymorphism
+         */
+
+        berjalan() {
+            return `${this.merk} berjalan menggunakan
+                    kendaraan roda dua.`;
+        }
+
+        getInfo() {
+            return `
+                <strong>🏍️ ${this.merk}</strong>
+            `;
+        }
+    }
+
+
+    /*
+     * ===================================================
+     * CLASS SISTEM
+     * ===================================================
+     */
+
+    class SistemKendaraan {
+
+        constructor() {
+            this.daftar = [];
+        }
+
+        /*
+         * Menambahkan kendaraan
+         */
+
+        tambah(kendaraan) {
+            this.daftar.push(kendaraan);
+        }
+
+        /*
+         * Menghapus kendaraan
+         */
+
+        hapus(index) {
+            this.daftar.splice(index, 1);
+        }
+
+        /*
+         * Menghitung jumlah kendaraan
+         */
+
+        total() {
+            return this.daftar.length;
+        }
+
+        /*
+         * Menghitung jumlah mobil
+         */
+
+        jumlahMobil() {
+            return this.daftar.filter(
+                kendaraan => kendaraan instanceof Mobil
+            ).length;
+        }
+
+        /*
+         * Menghitung jumlah motor
+         */
+
+        jumlahMotor() {
+            return this.daftar.filter(
+                kendaraan => kendaraan instanceof Motor
+            ).length;
+        }
+    }
+
+
+    /*
+     * ===================================================
+     * STATIC METHOD
+     * ===================================================
+     */
+
+    class Utility {
+
+        static formatTahun(tahun) {
+            return "Tahun produksi: " + tahun;
+        }
+    }
+
+
+    /*
+     * ===================================================
+     * SISTEM
+     * ===================================================
+     */
+
+    const sistem = new SistemKendaraan();
+
+
+    /*
+     * ===================================================
+     * FUNGSI TAMBAH KENDARAAN
+     * ===================================================
+     */
+
+    function tambahKendaraan() {
+
+        const jenis =
+            document.getElementById("jenis").value;
+
+        const merk =
+            document.getElementById("merk").value;
+
+        const tahun =
+            Number(document.getElementById("tahun").value);
+
+        const detail =
+            document.getElementById("detail").value;
+
+
+        // Validasi
+
+        if (
+            merk === "" ||
+            tahun === 0 ||
+            detail === ""
+        ) {
+            alert("Semua data harus diisi!");
+            return;
+        }
+
+
+        let kendaraan;
+
+
+        /*
+         * Membuat object berdasarkan jenis kendaraan
+         */
+
+        if (jenis === "mobil") {
+
+            kendaraan = new Mobil(
+                merk,
+                tahun,
+                detail
+            );
+
+        } else {
+
+            kendaraan = new Motor(
+                merk,
+                tahun,
+                detail
+            );
+        }
+
+
+        /*
+         * Menambahkan object
+         */
+
+        sistem.tambah(kendaraan);
+
+
+        /*
+         * Menampilkan data
+         */
+
+        tampilkanKendaraan();
+
+
+        /*
+         * Membersihkan form
+         */
+
+        document.getElementById("merk").value = "";
+        document.getElementById("tahun").value = "";
+        document.getElementById("detail").value = "";
+    }
+
+
+    /*
+     * ===================================================
+     * MENAMPILKAN DATA
+     * ===================================================
+     */
+
+    function tampilkanKendaraan() {
+
+        const container =
+            document.getElementById("daftarKendaraan");
+
+        container.innerHTML = "";
+
+
+        if (sistem.total() === 0) {
+
+            container.innerHTML =
+                '<p class="info">Belum ada kendaraan.</p>';
+
+            updateStatistik();
+
+            return;
+        }
+
+
+        sistem.daftar.forEach((kendaraan, index) => {
+
+            const div =
+                document.createElement("div");
+
+            div.className = "vehicle";
+
+            div.innerHTML = `
+                <h3>
+                    ${kendaraan.getInfo()}
+                </h3>
+
+                <p class="info">
+                    Tahun: ${kendaraan.tahun}
+                </p>
+
+                <p class="success">
+                    ${kendaraan.berjalan()}
+                </p>
+
+                <button
+                    class="danger"
+                    onclick="hapusKendaraan(${index})">
+                    Hapus
+                </button>
+            `;
+
+            container.appendChild(div);
+        });
+
+
+        updateStatistik();
+    }
+
+
+    /*
+     * ===================================================
+     * HAPUS DATA
+     * ===================================================
+     */
+
+    function hapusKendaraan(index) {
+
+        sistem.hapus(index);
+
+        tampilkanKendaraan();
+    }
+
+
+    /*
+     * ===================================================
+     * UPDATE STATISTIK
+     * ===================================================
+     */
+
+    function updateStatistik() {
+
+        document.getElementById("totalKendaraan")
+            .textContent = sistem.total();
+
+        document.getElementById("totalMobil")
+            .textContent = sistem.jumlahMobil();
+
+        document.getElementById("totalMotor")
+            .textContent = sistem.jumlahMotor();
+    }
+
+
+    /*
+     * ===================================================
+     * CONTOH STATIC METHOD
+     * ===================================================
+     */
+
+    console.log(
+        Utility.formatTahun(2026)
+    );
+
+
+    /*
+     * Menampilkan data awal
+     */
+
+    tampilkanKendaraan();
+
+</script>
+
+
+</body>
+
+</html>
